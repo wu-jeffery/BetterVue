@@ -11,11 +11,12 @@ def register_routes(app, client):
     SECRET_KEY = os.getenv("SECRET_KEY")
     users = client.interview_prep.users  
 
-    @app.route("/users/login/")
+    @app.route("/users/login/", methods=["POST"])
     def login():
-        email = flask.request.form["email"]
-        username = flask.request.form["username"]
-        password = flask.request.form["password"]
+        data = flask.request.get_json()
+        email = data.get("email")
+        username = data.get("username")
+        password = data.get("password")
 
         user = users.find_one({"email": email})
         if not user:
