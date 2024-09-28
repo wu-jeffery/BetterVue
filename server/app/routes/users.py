@@ -4,6 +4,7 @@ import hashlib
 import uuid
 import jwt
 from dotenv import load_dotenv
+import os
 
 def register_routes(app, client):
     load_dotenv()
