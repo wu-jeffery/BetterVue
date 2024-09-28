@@ -3,7 +3,6 @@ import '/tailwind.config.js'
 import Link from 'next/link'
 
 export default function Login() {
-    
     const [user, setUser] = useState();
     const [password, setPassword] = useState();
 

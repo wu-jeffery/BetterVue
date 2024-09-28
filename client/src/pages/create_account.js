@@ -1,15 +1,42 @@
 import Link from "next/link";
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 
 export default function create_account() {
     const [email, setEmail] = useState();
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
     const [confirmPassword, setConfirmPassword] = useState();
+    let router = useRouter();
 
     async function submit() {
         if (password !== confirmPassword) {
             alert("Passwords do not match");
+            return;
+        }
+
+        const res = await fetch("http://localhost:5000/users/create_account/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: email,
+                username: username,
+                password: password,
+            }),
+        });
+
+        if (res.status === 409) {
+            alert("Username/email already exists");
+            return;
+        } else if (res.ok) {
+            let result = await res.json();
+            localStorage.setItem("token", result.token);
+            router.push("/home/");
+            return;
+        } else {
+            alert("Error");
             return;
         }
     }
@@ -57,7 +84,7 @@ export default function create_account() {
 
                 <div className="flex flex-col w-full h-full items-center justify-items-center pb-4">
                     <div>
-                        <button className="rounded-xl h-full w-full text-textDark">CREATE ACCOUNT</button>
+                        <button className="rounded-xl h-full w-full text-textDark" onClick={submit}>CREATE ACCOUNT</button>
                     </div>
                     <div>
                         <Link href="/login/">Already have an account?</Link>

@@ -11,6 +11,23 @@ def register_routes(app, client):
     SECRET_KEY = os.getenv("SECRET_KEY")
     users = client.interview_prep.users  
 
+    @app.route("/users/verify/" , methods=["POST"])
+    def verify():
+        data = flask.request.get_json()
+        token = data.get("token")
+
+        try:
+            decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            username = decoded["username"]
+        except:
+            return flask.abort(401)
+
+        user = users.find_one({"username": username})
+        if not user:
+            return flask.abort(401)
+
+        return flask.jsonify({"username": username}), 200
+
     @app.route("/users/login/", methods=["POST"])
     def login():
         data = flask.request.get_json()
@@ -38,9 +55,10 @@ def register_routes(app, client):
 
     @app.route("/users/create_account/", methods=["POST"])
     def create_account():
-        email = flask.request.form["email"]
-        username = flask.request.form["username"]
-        password = flask.request.form["password"]
+        data = flask.request.get_json()
+        email = data.get("email")
+        username = data.get("username")
+        password = data.get("password")
         
         algorithm = 'sha512'
         salt = uuid.uuid4().hex
@@ -65,7 +83,9 @@ def register_routes(app, client):
         }
 
         users.insert_one(user)
-        return "Account created", 200
+
+        token = jwt.encode({"username": username}, SECRET_KEY, algorithm="HS256")
+        return flask.jsonify({"token": token}), 200
 
 
     @app.route("/users/delete_account/")
