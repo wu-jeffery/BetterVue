@@ -15,17 +15,22 @@ export default function Login() {
             password: password,
             email: "blank"
         };
+        
+        try {
+            const res = await fetch("http://localhost:5000/users/login/", {
+                method: "POST",
+                body: JSON.stringify(userData),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
 
-        const res = await fetch("http://localhost:5000/users/login/", {
-            method: "POST",
-            body: JSON.stringify(userData),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-
-        let result = await res.JSON;
-        console.log(result);
+            let result = await res.json();
+            localStorage.setItem("token", result.token);
+        } catch {
+            console.log("error");
+            return;
+        }
     }
 
     return (
@@ -48,7 +53,7 @@ export default function Login() {
             <div className={`absolute top-10/12 w-full h-1/12 flex flex-col items-center justify-center`}>
 
                 <div>
-                    <button className={`bg-header m-1 rounded-xl h-full w-full border-header text-textDark`} onClick={handleSubmit}>LOGIN</button>
+                    <button className={`border border-md p-2 m-1 rounded-xl h-full w-full text-textDark`} onClick={handleSubmit}>LOGIN</button>
                 </div>
                 <div>
                     <Link href="/create_account/">Need to create an account?</Link>

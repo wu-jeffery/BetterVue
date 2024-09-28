@@ -1,4 +1,14 @@
 import Link from "next/link";
+import React, { useState } from "react";
+
+const [email, setEmail] = useState();
+const [username, setUsername] = useState();
+const [password, setPassword] = useState();
+const [confirmPassword, setConfirmPassword] = useState();
+
+async function submit() {
+
+}
 
 export default function create_account() {
     return(
@@ -6,7 +16,7 @@ export default function create_account() {
             <div className="border rounded-md w-1/3 flex flex-col justify-items-center items-start space-y-5">
                 <div className="w-full p-4 pb-0">
                     <p>Email: </p>
-                    <input type="text" className="w-full rounded rounded-md bg-bgLight dark:bg-bgDark border p-2" placeholder="Enter email here"></input>
+                    <input type="text" className="w-full rounded rounded-md bg-bgLight dark:bg-bgDark border p-2" placeholder="Enter email here" onChange={() => {}}></input>
                 </div>
 
                 <div className="w-full px-4">
