@@ -64,7 +64,7 @@ def register_routes(app, client):
         }
 
         users.insert_one(user)
-        return 200
+        return "Account created", 200
 
 
     @app.route("/users/delete_account/")

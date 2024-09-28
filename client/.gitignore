@@ -9,6 +9,7 @@
 
 # next.js
 client/.next/
+/.next/
 .next
 /client/.next/
 /client/.next
