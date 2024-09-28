@@ -22,6 +22,8 @@ def register_routes(app, client):
             user = users.find_one({"username": username})
             if not user:
                 return flask.abort(404)
+
+        hashed_password = user["password"]
             
         algorithm, salt, hash_value = hashed_password.split('$')
         sha512 = hashlib.new(algorithm)
@@ -29,7 +31,7 @@ def register_routes(app, client):
         sha512.update(salted_pass.encode('utf-8'))
         if (hash_value == sha512.hexdigest()):
             token = jwt.encode({"username": username}, SECRET_KEY, algorithm="HS256")
-            return jsonify({"token": token}), 200
+            return flask.jsonify({"token": token}), 200
         else:
             return flask.abort(403)
 
