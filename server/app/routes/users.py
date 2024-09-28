@@ -6,7 +6,7 @@ import jwt
 from dotenv import load_dotenv
 import os
 
-def register_routes(app, client):
+def register_user_routes(app, client):
     load_dotenv()
     SECRET_KEY = os.getenv("SECRET_KEY")
     users = client.interview_prep.users  
