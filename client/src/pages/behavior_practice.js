@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import Webcam from 'react-webcam';
 import { useVoiceVisualizer, VoiceVisualizer } from "react-voice-visualizer";
 
-function AudioRecorder({qLeftTwo, handleNextQuestion, numberOfQuestions, totalTimeInSeconds, getQuestion}) {
+function AudioRecorder({qLeftTwo, handleNextQuestion, numberOfQuestions, totalTimeInSeconds, getQuestion, question}) {
     const audioChunksRef = useRef([]);
     const mediaRecorderRef = useRef(null); // Use useRef for mediaRecorder
 
@@ -33,16 +33,37 @@ function AudioRecorder({qLeftTwo, handleNextQuestion, numberOfQuestions, totalTi
                         },
                     });
 
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
+                    // if (!response.ok) {
+                    //     throw new Error('Network response was not ok');
+                    // }
                     console.log("response was ok")
                     const data = await response.json();
                     console.log(data["transcript"]);
+                    let questionData = {
+                        question: question,
+                        response: data["transcript"]
+                    }
+                    console.log("judging...")
+                    const resp = await(fetch('http://localhost:5000/behavioral/judge/', {
+                        method: "POST",
+                        body: JSON.stringify(questionData),
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    }));
+                    const feedback = await resp.json();
+                    console.log(feedback["feedback"])
                 } catch (error) {
                     console.error('Error uploading audio:', error);
                 } finally {
                     audioChunksRef.current = []; // Clear chunks after sending
+                }
+
+                try{
+                    
+                    
+                } catch (error) {
+                    console.error(error)
                 }
             };
 
@@ -89,7 +110,6 @@ function AudioVisuals({qLeftTwo, numberOfQuestions, totalTimeInSeconds, handleNe
     // Get the recorded audio blob
     useEffect(() => {
         if (!recordedBlob) return;
-        console.log(recordedBlob);
     }, [recordedBlob]);
 
     // Get the error when it occurs
@@ -101,7 +121,15 @@ function AudioVisuals({qLeftTwo, numberOfQuestions, totalTimeInSeconds, handleNe
     return (
         <div>
             <div className={visualizerClass}>
-                <VoiceVisualizer controls={recorderControls} isControlPanelShown={false}/>
+                <VoiceVisualizer 
+                    controls={recorderControls} 
+                    isControlPanelShown={false}
+                    style={{
+                        pointerEvents: 'none',
+                        userSelect: 'none',
+                    }}
+                    className="voice-visualizer"
+                />
             </div>
             <div className='flex flex-col items-center justify-center w-full'>
                 <NextQuestionStartTimer 
@@ -128,7 +156,6 @@ function AudioVisuals({qLeftTwo, numberOfQuestions, totalTimeInSeconds, handleNe
 function VideoVisuals({videoOn, webcamRef}) {
     if (!videoOn) return;
     if (videoOn) {
-        console.log("Camera");
         return (
             <Webcam
                 audio={false}
@@ -137,7 +164,7 @@ function VideoVisuals({videoOn, webcamRef}) {
                 videoConstraints={{
                     facingMode: 'user',
                 }}
-                className="mb-4"
+                className="mb-4 webcam-display"
             />
         );
     }
@@ -181,13 +208,14 @@ function TimerBar({ numberOfQuestions, totalTimeInSeconds, isRunning, stopRecord
     const stopRecordingRef = useRef(stopRecording)
     const stopRecordingAudioRef = useRef(stopRecordingAudio)
 
+    const router = useRouter();
+    
     useEffect(() => {
         stopRecordingRef.current = stopRecording;
         stopRecordingAudioRef.current = stopRecordingAudio;
     }, [stopRecording, stopRecordingAudio]);
 
     useEffect(() => {
-        console.log(isRunning);
         if (isRunning % 2 == 1){
             setTimeLeft(totalTimeInSeconds); // Reset timer when totalTimeInSeconds changes
         } 
@@ -195,14 +223,15 @@ function TimerBar({ numberOfQuestions, totalTimeInSeconds, isRunning, stopRecord
 
     useEffect(() => {
         if (isRunning % 2 == 0){
-            console.log("Stopping");
             setTimeLeft(totalTimeInSeconds);
             setQuestionsLeft(questionsLeft - 1);        
-            console.log("Number of questions left: ", questionsLeft);
+            // console.log("Number of questions left: ", questionsLeft);
             if (questionsLeft == 0) {
-                useRouter().push({
+                router.push({
                     pathname: '/behavior_results',
-                    query: {},
+                    query: {
+                        numberOfQuestions
+                    },
                 });
             }
             return;
@@ -210,17 +239,17 @@ function TimerBar({ numberOfQuestions, totalTimeInSeconds, isRunning, stopRecord
         
         const interval = setInterval(() => {
             setTimeLeft((prevTime) => {
-                console.log(prevTime);
                 if (prevTime <= 0) {
                     setTimeLeft(totalTimeInSeconds);
-                    console.log("STOP");
                     stopRecordingRef.current();
                     stopRecordingAudioRef.current();
                     clearInterval(interval);
                     if (questionsLeft == 0) {
-                        useRouter().push({
+                        router.push({
                             pathname: '/behavior_results',
-                            query: {},
+                            query: {
+                                numberOfQuestions
+                            },
                         });
                         return;
                     }
@@ -282,10 +311,9 @@ export default function Home() {
             });
             
             if (!res.ok){
-                console.log("sum shit broke");
+                // console.log("sum shit broke");
                 return;
             }
-
 
             let result = await res.json();
             let q = result.question;
@@ -313,41 +341,41 @@ export default function Home() {
 
     return (
       <div>
-        <button 
-            onClick={backToSettings} s
-            className='rounded-full border text-l p-5 w-1/16 text-center m-5'
-            style={{
-                backgroundColor: '#4CAF50', // Green background
-                color: 'white', // White text
-                cursor: 'pointer' // Pointer cursor on hover
-            }}
-        >
-            Back to Settings
-        </button>
-        <h1 className="text-center text-6xl font-extrabold mt-5">Behavioral Practice</h1>
+        <div className='flex align-center'>
+            <button 
+                onClick={backToSettings}
+                className='rounded-full border text-l p-5 w-1/16 text-center m-5'
+                style={{
+                    backgroundColor: '#4CAF50', // Green background
+                    color: 'white', // White text
+                    cursor: 'pointer' // Pointer cursor on hover
+                }}
+            >
+                Back to Settings
+            </button>
+            <h1 className="text-center text-6xl font-extrabold mt-5">Behavioral Practice</h1>
+        </div>
 
         <div className="text-center my-3">
             {question}
         </div>
         
         {/* Webcam Component */}
-        <div className='w-full'>
-            <div className="flex justify-center flex-col items-center mb-2">
-                <VideoVisuals videoOn = {isVideoOn} webcamRef = {webcamRef}/>
-            </div>
-            
-            {/* Audio Visualizer */}
-            <div className='flex flex-col items-center justify-center w-full'>
-                <AudioRecorder
-                    qLeftTwo={qLeftTwo}
-                    handleNextQuestion={handleNextQuestion}
-                    numberOfQuestions={numberOfQuestions}
-                    totalTimeInSeconds={timePerQuestion} 
-                    getQuestion={getQuestion}
-                />
-            </div> 
+        <div className="flex justify-center flex-col items-center mb-2">
+            <VideoVisuals videoOn = {isVideoOn} webcamRef = {webcamRef}/>
         </div>
         
+        {/* Audio Visualizer */}
+        <div className='flex flex-col items-center justify-center w-full'>
+            <AudioRecorder
+                qLeftTwo={qLeftTwo}
+                handleNextQuestion={handleNextQuestion}
+                numberOfQuestions={numberOfQuestions}
+                totalTimeInSeconds={timePerQuestion} 
+                getQuestion={getQuestion}
+                question={question}
+            />
+        </div> 
       </div>
     );
 }

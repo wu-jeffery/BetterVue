@@ -17,6 +17,15 @@
   color: #000000;
 }
 
+.webcam-display {
+  width: auto;  /* Adjust to desired width */
+  height: 250px;
+}
+
+.voice-visualizer * {
+  user-select: none;  /* Disable text and element selection */
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
