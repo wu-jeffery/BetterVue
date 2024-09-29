@@ -163,6 +163,8 @@ def register_behavioral_routes(app, client):
         data = flask.request.get_json()
         username = data.get("username")
         numQuestions = data.get("numQuestions")
-        results = mocks.find({"username": username}).sort('_id', -1).limit(numQuestions)
-        ret = {f"Question {i + 1}": doc for i, doc in enumerate(results)}
+        results = mocks.find({"username": username}, {"_id": 0, "feedback": 1, "question": 1}).sort('_id', -1).limit(numQuestions)
+        ret = {"questions": {
+            
+        }}
         return flask.jsonify(ret), 200
