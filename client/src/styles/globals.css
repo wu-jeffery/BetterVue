@@ -54,10 +54,16 @@ body {
 /* Define the ellipse radial gradient */
 .ellipse-gradient {
   background: radial-gradient(ellipse at center, #347136 0%, rgba(76, 175, 80, 0) 70%);
+  z-index: -1;
   /* Green gradient (#4caf50 is the hex code for a medium green) */
 }
 
 /* Rotate class with custom 40-degree rotation */
 .rotate-\[40deg\] {
   --tw-rotate: 40deg;
+}
+
+.scale-gradient {
+  transform: scale(2.0); /* Adjust the scale factor as needed */
+  transform-origin: center; /* Make sure the scaling is from the center */
 }

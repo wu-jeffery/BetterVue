@@ -4,8 +4,8 @@ import { useRouter } from 'next/router';
 
 export default function Home() {
     const router = useRouter();
-    const { numberOfQuestions } = router.query;
-    const questionCount = parseInt(numberOfQuestions, 10) || 0;
+    const numQuestions = localStorage.getItem('numQ')
+    const numQ = parseInt(numQuestions, 10)
 
     const[questionsList, setQuestionsList] = useState([]);
 
@@ -21,16 +21,21 @@ export default function Home() {
             method: "POST",
             body: JSON.stringify({
                 token: localStorage.getItem("token"),
-            })
+            }),
+            headers: {
+                "Content-Type": "application/json",
+            },
         });
         user = await user.json();
         user = user["username"];
+        console.log(user)
+        console.log(numQ)
 
         let body = {
             username: user,
-            numQuestions: numberOfQuestions
+            numQuestions: numQ,
         };
-
+        console.log("fetching results")
         let result = await fetch('http://localhost:5000/behavioral/results/', {
             method: "POST",
             body: JSON.stringify(body),
@@ -38,14 +43,19 @@ export default function Home() {
                 "Content-Type": "application/json",
             },
         });
-        result = result.json();
+        result = await result.json();
 
         const qList = Object.entries(result.questions)
         setQuestionsList(qList)
     }
 
+    useEffect(() => {
+        getResults();
+    }, []);
+
     return(
         <div>
+            <div className="absolute ellipse-gradient w-[2000px] h-[2000px] top-[800px] left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
             <div className='flex align-center'>
                 <button 
                     onClick={backToSettings}

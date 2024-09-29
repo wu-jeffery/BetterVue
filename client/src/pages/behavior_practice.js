@@ -44,7 +44,10 @@ function AudioRecorder({qLeftTwo, handleNextQuestion, numberOfQuestions, totalTi
                         method: "POST",
                         body: JSON.stringify({
                             token: localStorage.getItem("token"),
-                        })
+                        }),
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
                     })
                     user = await user.json()
                     user = user["username"]
@@ -224,6 +227,13 @@ function TimerBar({ numberOfQuestions, totalTimeInSeconds, isRunning, stopRecord
     const stopRecordingAudioRef = useRef(stopRecordingAudio)
 
     const router = useRouter();
+
+    const goToResults = () => {
+        router.push({
+            pathname: '/behavior_results',
+            query: {},
+        });
+    }
     
     useEffect(() => {
         stopRecordingRef.current = stopRecording;
@@ -242,12 +252,7 @@ function TimerBar({ numberOfQuestions, totalTimeInSeconds, isRunning, stopRecord
             setQuestionsLeft(questionsLeft - 1);        
             // console.log("Number of questions left: ", questionsLeft);
             if (questionsLeft == 0) {
-                router.push({
-                    pathname: '/behavior_results',
-                    query: {
-                        numberOfQuestions
-                    },
-                });
+                goToResults();
             }
             return;
         } 
@@ -260,12 +265,7 @@ function TimerBar({ numberOfQuestions, totalTimeInSeconds, isRunning, stopRecord
                     stopRecordingAudioRef.current();
                     clearInterval(interval);
                     if (questionsLeft == 0) {
-                        router.push({
-                            pathname: '/behavior_results',
-                            query: {
-                                numberOfQuestions
-                            },
-                        });
+                        goToResults();
                         return;
                     }
                     return 0;
@@ -309,6 +309,7 @@ export default function Home() {
     const router = useRouter();
     const { numberOfQuestions, timePerQuestion, videoOn } = router.query;
     const isVideoOn = videoOn == 'true';
+    localStorage.setItem('numQ', numberOfQuestions.toString());
 
     const [qLeftTwo, setQLeftTwo] = useState(numberOfQuestions * 2);
     const webcamRef = useRef(null);
@@ -334,7 +335,6 @@ export default function Home() {
             let q = result.question;
             console.log(q);
             setQuestion(q);
-
         }
         catch (error){
             console.log(error);
@@ -357,8 +357,8 @@ export default function Home() {
     return (
         <div className="relative w-full h-screen">
           {/* Radial Gradient Background */}
-          <div className="absolute inset-0 ellipse-gradient rotate-[40deg] z-0"></div>
-          
+        {/* Top-Left Radial Gradient, pushed more into the corner with margin */}
+        <div className="absolute ellipse-gradient w-[2000px] h-[2000px] top-[800px] left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
           <div className="relative z-10">
               <div className='flex align-center'>
                   <button 
