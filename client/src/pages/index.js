@@ -12,7 +12,11 @@ export default function Home() {
 			<Link href="/create_account/" className='rounded border text-xl p-5 w-1/4 text-center'>
 				Create an account!
 			</Link>
+			<Link href="/behavioral/" className='rounded border text-xl p-5 w-1/4 text-center'>
+				Practice behaviorals!
+			</Link>
 		</div>
+		
     </div>
   );
 }
