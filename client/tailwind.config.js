@@ -9,6 +9,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        'button_color': '#ffffff',
         'sidebarLight': '#f9f9f9',
         'sidebarDark': '#1f2020',
         'textLight': '#000000',

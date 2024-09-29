@@ -7,10 +7,35 @@
   --foreground: #171717;
 }
 
+.voice-visualizer {
+  --main-bar-color: #000000;
+  --secondary-bar-color: #888888;
+  --background-color: #ffffff;
+}
+
+.number-input {
+  color: #000000;
+}
+
+.webcam-display {
+  width: auto;  /* Adjust to desired width */
+  height: 250px;
+}
+
+.voice-visualizer * {
+  user-select: none;  /* Disable text and element selection */
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+  }
+
+  .voice-visualizer {
+    --main-bar-color: #ffffff;
+    --secondary-bar-color: #bbbbbb;
+    --background-color: #000000;
   }
 }
 

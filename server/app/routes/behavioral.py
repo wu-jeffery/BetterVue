@@ -3,13 +3,14 @@ from dotenv import load_dotenv
 import os
 import random
 from groq import Groq
-
+import speech_recognition as sr
+from pydub import AudioSegment
 
 def register_behavioral_routes(app, client):
     model = Groq(
         api_key=os.getenv("GROQ_API_KEY"),
     )
-
+    mocks = client.interview_prep.mocks
     @app.route("/behavioral/questions/")
     def getQuestion():
         questionBank = [
@@ -52,7 +53,7 @@ def register_behavioral_routes(app, client):
             "Describe a time when you needed to motivate a group of individuals or encourage collaboration during a particular project.",
             "What do you do to enhance your technical knowledge apart from your project work?",
             "How do you prioritize your workload? What do you do when your work feels like it's just too much to get done?",
-            "What’s the Number One Accomplishment You’re Most Proud Of?",
+            "What’s the number one accomplishment you’re most proud of?",
             "Explain the situation where you had excess work and knew you could not meet the deadline. How did you manage then?",
             "What will be your course of action if you are assigned some task which you don’t know at all?",
             "Give an example of when you took a huge risk and failed.",
@@ -70,6 +71,7 @@ def register_behavioral_routes(app, client):
     
     @app.route("/behavioral/judge/", methods=["POST"])
     def judgeResponse():
+        print("received judge request")
         data = flask.request.get_json()
         question = data.get("question")
         response = data.get("response")
@@ -90,6 +92,66 @@ def register_behavioral_routes(app, client):
             model="llama3-8b-8192",
         )
         feedback = chat_completion.choices[0].message.content
+        mockQuestion = {
+            "question": question,
+            "response": response,
+            "feedback": feedback
+        }
+        mocks.insert_one(mockQuestion)
         return flask.jsonify({"feedback": feedback})
-
     
+
+
+    @app.route("/behavioral/processaudio/", methods=["POST"])
+    def processAudio():
+        print("Received request")
+        if 'audio' not in flask.request.files:
+            print("No audio file provided")
+            return flask.jsonify({"error": "No audio file provided"}), 400
+
+        audio_file = flask.request.files['audio']
+        if not audio_file.filename.endswith('.wav'):
+            print("File is not WAV format")
+            return flask.jsonify({"error": "File is not a WAV format"}), 400
+        
+        print(1)
+        temp_path = "temp_audio"  # Temporary path for uploaded file
+        print(2)
+        wav_path = "audio.wav"  # Final path after 
+        print(3)
+        audio_file.save(temp_path)
+        print(4)
+        audio_segment = AudioSegment.from_file(temp_path)
+        print(5)
+        audio_segment.export(wav_path, format="wav")
+        print(6)
+        
+        recognizer = sr.Recognizer()
+        
+        # Use the audio file with the recognizer
+        with sr.AudioFile(wav_path) as source:
+            try:
+                audio = recognizer.record(source)  # Read the entire audio file
+                print("recognized")
+                # Use Google Web Speech API to recognize the audio
+                text = recognizer.recognize_whisper(audio)
+                print("googled")
+                print(text)
+                return flask.jsonify({"transcript": text}), 200
+            except sr.UnknownValueError:
+                print("Could not understand audio")
+                return flask.jsonify({"error": "Could not understand audio"}), 400
+            except sr.RequestError as e:
+                print("Could not request results")
+                return flask.jsonify({"error": f"Could not request results from Google Speech Recognition service; {e}"}), 500
+            finally:
+                print("removing shit")
+                recordingPath = "uploads/recording.wav"
+                if os.path.exists(recordingPath):
+                    os.remove(recordingPath)
+                if os.path.exists("uploads"):
+                    os.rmdir("uploads")
+                if os.path.exists(temp_path):
+                    os.remove(temp_path)
+                if os.path.exists(wav_path):
+                    os.remove(wav_path)
