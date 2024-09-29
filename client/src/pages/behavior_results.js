@@ -7,6 +7,7 @@ export default function Home() {
     let numQuestions;
     const numQ = parseInt(numQuestions, 10)
     const [resultsReady, setReady] = useState(false)
+    const [a, setA] = useState();
 
     const[questionsList, setQuestionsList] = useState([]);
 
@@ -34,6 +35,10 @@ export default function Home() {
 
         // Clean up the interval on unmount or when the condition is met
         return () => clearInterval(intervalId);
+        
+        if (global?.window !== undefined) {
+            setA(localStorage.getItem("ready"));
+        }
     }, []);
 
     useEffect(() => {
@@ -43,7 +48,7 @@ export default function Home() {
     }, [resultsReady]); // Run when conditionMet changes
 
     const getResults = async () => {
-        let token;
+        let token; 
         if (global?.window !== undefined) {
             token = localStorage.setItem("token", result.token);   
         }
@@ -84,7 +89,7 @@ export default function Home() {
             console.log("RESULTS RESULTS RESULTS")
             getResults();
         }
-    }, [localStorage.getItem("ready")]);
+    }, [a]);
 
     return(
         <div>
