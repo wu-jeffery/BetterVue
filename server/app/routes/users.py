@@ -12,6 +12,22 @@ def register_user_routes(app, client):
     SECRET_KEY = os.getenv("SECRET_KEY")
     users = client.interview_prep.users  
 
+    @app.route("/users/elo/", methods=["POST"])
+    def elo():
+        data = flask.request.get_json()
+        username = data.get("username")
+        result = data.get("result")
+
+        user = users.find_one({"username": username})
+        if result == "win":
+            new_elo = user["ELO"] + 50
+        else:
+            new_elo = user["ELO"] - 50
+
+        users.update_one({"username": user["username"]}, {"$set": {"ELO": new_elo}})
+
+        return "elos adjusted", 200
+
     @app.route("/users/info/" , methods=["POST"])
     def info():
         data = flask.request.get_json()
@@ -20,6 +36,12 @@ def register_user_routes(app, client):
         user = users.find_one({"username": username})
         if not user:
             return flask.abort(404)
+
+        user = {
+            "username": user["username"],
+            "ELO": user["ELO"],
+            "questions_done": user["questions_done"]
+        }
 
         return flask.jsonify(user), 200
 
@@ -59,6 +81,7 @@ def register_user_routes(app, client):
         sha512 = hashlib.new(algorithm)
         salted_pass = salt + password
         sha512.update(salted_pass.encode('utf-8'))
+        
         if (hash_value == sha512.hexdigest()):
             token = jwt.encode({"username": username}, SECRET_KEY, algorithm="HS256")
             return flask.jsonify({"token": token}), 200
@@ -93,23 +116,10 @@ def register_user_routes(app, client):
             "username": username,
             "password": hashed_password,
             "ELO": 1000,
-            "questions_done": 0,
-            "_id": ObjectId()
+            "questions_done": 0
         }
 
         users.insert_one(user)
 
         token = jwt.encode({"username": username}, SECRET_KEY, algorithm="HS256")
         return flask.jsonify({"token": token}), 200
-
-
-    @app.route("/users/delete_account/")
-    def delete_account():
-        username = flask.request.form["username"]
-
-        user = users.find_one({"username": username})
-        if not user:
-            return flask.abort(404)
-
-        users.delete_one({"username": username})
-        return 200
