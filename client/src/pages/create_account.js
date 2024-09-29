@@ -32,7 +32,9 @@ export default function create_account() {
             return;
         } else if (res.ok) {
             let result = await res.json();
-            localStorage.setItem("token", result.token);
+            if (global?.window !== undefined) {
+                localStorage.setItem("token", result.token);   
+            }
             router.push("/home/");
             return;
         } else {

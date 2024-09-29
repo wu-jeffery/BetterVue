@@ -25,7 +25,9 @@ function AudioRecorder({qLeftTwo, handleNextQuestion, numberOfQuestions, totalTi
                 console.log("Sending to backend...");
                 
                 try {
-                    localStorage.setItem('ready', "false");
+                    if (global?.window !== undefined) {
+                        localStorage.setItem('ready', "false");
+                    }
                     const response = await fetch('https://my-project-mocha-alpha.vercel.app/behavioral/processaudio/', {
                         method: "POST",
                         body: formData,
@@ -41,10 +43,15 @@ function AudioRecorder({qLeftTwo, handleNextQuestion, numberOfQuestions, totalTi
                     const data = await response.json();
                     console.log(data["transcript"]); 
 
+                    let token;
+                    if (global?.window !== undefined) {
+                        token = localStorage.getItem("token");
+                    }
+
                     let user = await fetch('https://my-project-mocha-alpha.vercel.app/users/verify/', {
                         method: "POST",
                         body: JSON.stringify({
-                            token: localStorage.getItem("token"),
+                            token: token,
                         }),
                         headers: {
                             "Content-Type": "application/json",
@@ -69,7 +76,9 @@ function AudioRecorder({qLeftTwo, handleNextQuestion, numberOfQuestions, totalTi
                     }));
                     const feedback = await resp.json();
                     console.log(feedback["feedback"])
-                    localStorage.setItem('ready', "true");
+                    if (global?.window !== undefined) {
+                        localStorage.setItem('ready', "true"); 
+                    }
                 } catch (error) {
                     console.error('Error uploading audio:', error);
                 } finally {
@@ -311,7 +320,11 @@ export default function Home() {
     const router = useRouter();
     const { numberOfQuestions, timePerQuestion, videoOn } = router.query;
     const isVideoOn = videoOn == 'true';
-    localStorage.setItem('numQ', numberOfQuestions.toString());
+    
+    if (global?.window !== undefined) {
+        localStorage.setItem('numQ', numberOfQuestions.toString());
+    }
+    
 
     const [qLeftTwo, setQLeftTwo] = useState(numberOfQuestions * 2);
     const webcamRef = useRef(null);

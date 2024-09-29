@@ -26,7 +26,9 @@ export default function Login() {
             });
 
             let result = await res.json();
-            localStorage.setItem("token", result.token);
+            if (global?.window !== undefined) {
+                localStorage.setItem("token", result.token);   
+            }
         } catch {
             setWrong(true);
             console.log("error");

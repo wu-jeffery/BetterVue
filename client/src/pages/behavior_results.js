@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 
 export default function Home() {
     const router = useRouter();
-    const numQuestions = localStorage.getItem('numQ')
+    let numQuestions;
     const numQ = parseInt(numQuestions, 10)
     const [resultsReady, setReady] = useState(false)
 
@@ -18,6 +18,7 @@ export default function Home() {
     }
 
     useEffect(() =>{
+        numQuestions = localStorage.getItem('numQ');
         const checkCondition = () => {
             const itemValue = localStorage.getItem("ready");
             if (itemValue === "true") {
@@ -42,10 +43,14 @@ export default function Home() {
     }, [resultsReady]); // Run when conditionMet changes
 
     const getResults = async () => {
+        let token;
+        if (global?.window !== undefined) {
+            token = localStorage.setItem("token", result.token);   
+        }
         let user = await fetch('https://my-project-mocha-alpha.vercel.app/users/verify/', {
             method: "POST",
             body: JSON.stringify({
-                token: localStorage.getItem("token"),
+                token: token,
             }),
             headers: {
                 "Content-Type": "application/json",
