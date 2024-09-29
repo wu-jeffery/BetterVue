@@ -7,7 +7,7 @@ import { useVoiceVisualizer, VoiceVisualizer } from "react-voice-visualizer";
 function AudioRecorder({qLeftTwo, handleNextQuestion, numberOfQuestions, totalTimeInSeconds, getQuestion, question}) {
     const audioChunksRef = useRef([]);
     const mediaRecorderRef = useRef(null); // Use useRef for mediaRecorder
-    let recorderControls;
+    let recorderControls = {};
 
     useEffect(() => {
         recorderControls = useVoiceVisualizer();
