@@ -50,6 +50,7 @@ export default function Home() {
 
       <div className="flex flex-col items-center my-10 rounded border p-5">
         <h2 className="text-2xl font-bold mb-4">Set Interview Parameters</h2>
+
         {/*Setting number of Questions*/}
         <div className="mb-5">
           <label className="text-xl mr-2">Number of Questions:</label>
@@ -59,7 +60,7 @@ export default function Home() {
             max="10"
             value={numberOfQuestions}
             onChange={(e) => setNumberOfQuestions(Number(e.target.value))}
-            className="border p-2 rounded"
+            className="border p-2 rounded number-input"
           />
         </div>
         
