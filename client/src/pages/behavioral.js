@@ -34,73 +34,63 @@ export default function Home() {
 
   return (
     <div>
-      <h1 className="text-center text-6xl font-extrabold my-5">Behavioral Settings</h1>
-      <div className="absolute ellipse-gradient w-[2000px] h-[2000px] top-[800px] left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
-      <div className='h-full w-full flex flex-col items-center justify-center space-y-10'>
-        <Link href="/login/" className='rounded border text-xl p-5 w-1/4 text-center'>
-            Create an account to start practicing!
+      <div className="absolute ellipse-gradient w-full h-full"></div>
+      <div className="h-1/6 w-full flex flex-row justify-between my-8">
+        <Link href="/" className="flex w-1/3 p-6 pl-20 text-3xl items-center">
+          BetterVue
         </Link>
-        <Link href="/" className='rounded border text-xl p-5 w-1/4 text-center bg-gradient-to-br from-pink-500 to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800'>
-          <button className=''>
-            Home
-          </button> 
-        </Link>
-        
+        <h1 className="w-8/12 text-6xl font-extrabold my-5"> Behavioral Settings </h1>
       </div>
 
-      <div className="flex flex-col items-center my-10 rounded border p-5">
-        <h2 className="text-2xl font-bold mb-4">Set Interview Parameters</h2>
+      <div className='flex justify-center w-full h-1/2 my-10'>
+        <div className="w-full max-w-4/12 flex flex-col items-center justify-center rounded-lg border p-6">
+          <h2 className="text-2xl font-bold mb-4">Set Interview Parameters</h2>
 
-        {/*Setting number of Questions*/}
-        <div className="mb-5">
-          <label className="text-xl mr-2">Number of Questions:</label>
+          {/*Setting number of Questions*/}
+          <div className="mb-5">
+            <label className="text-xl mr-2">Number of Questions:</label>
+            <input
+              type="number"
+              min="1"
+              max="10"
+              value={numberOfQuestions}
+              onChange={(e) => setNumberOfQuestions(Number(e.target.value))}
+              className="border p-2 rounded number-input"
+            />
+          </div>
+          
+          {/*Setting Time*/}
+          <div className="mb-5">
+            <label className="text-xl mr-2">Time per Question (seconds):</label>
+            <input
+              type="range"
+              min="10"
+              max="120"
+              value={timePerQuestion}
+              onChange={(e) => setTimePerQuestion(Number(e.target.value))}
+              className="slider"
+            />
+            <span className="ml-2 text-xl">{timePerQuestion} s</span>
+          </div>
+
+          {/*Video On/off*/}
+          <div className="mb-5">
+          <label className="text-xl mr-2">Video On?</label>
           <input
-            type="number"
-            min="1"
-            max="10"
-            value={numberOfQuestions}
-            onChange={(e) => setNumberOfQuestions(Number(e.target.value))}
-            className="border p-2 rounded number-input"
-          />
+              type="checkbox" 
+              checked={videoOn}
+              onChange={handleToggle}
+              className="mr-2"
+            />
+          </div>
         </div>
-        
-        {/*Setting Time*/}
-        <div className="mb-5">
-          <label className="text-xl mr-2">Time per Question (seconds):</label>
-          <input
-            type="range"
-            min="10"
-            max="120"
-            value={timePerQuestion}
-            onChange={(e) => setTimePerQuestion(Number(e.target.value))}
-            className="slider"
-          />
-          <span className="ml-2 text-xl">{timePerQuestion} s</span>
-        </div>
-
-        {/*Video On/off*/}
-        <div className="mb-5">
-        <label className="text-xl mr-2">Video On?</label>
-        <input
-            type="checkbox" 
-            checked={videoOn}
-            onChange={handleToggle}
-            className="mr-2"
-          />
-        </div>
-
       </div>
 
       {/*Start Interview Button*/}
-      <div className="flex justify-center">
+      <div className="h-4/12 flex justify-center">
         <button 
           onClick={handleInterviewStart} 
-          className='rounded-full border text-xl p-5 w-1/4 text-center'
-          style={{
-            backgroundColor: '#4CAF50', // Green background
-            color: 'white', // White text
-            cursor: 'pointer' // Pointer cursor on hover
-          }}
+          className='rounded-full border text-xl p-5 w-1/4 text-center start-button'
         >
           Start Interview
         </button>

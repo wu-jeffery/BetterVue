@@ -26,6 +26,34 @@
   user-select: none;  /* Disable text and element selection */
 }
 
+.start-button {
+  background-color: #959488;
+  color: white;
+  cursor: pointer;
+}
+.start-button:hover {
+  background-color: #626058; /* Change to a darker color on hover */
+}
+
+.slider {
+  -webkit-appearance: none; /* Remove default styling */
+  width: 100%; /* Full width */
+  height: 8px; /* Track height */
+  background: #000000; /* Track background color */
+  border-radius: 5px; /* Rounded corners */
+}
+
+/* Styles for the slider thumb */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Remove default thumb styling */
+  appearance: none; /* Remove default thumb styling */
+  width: 20px; /* Thumb width */
+  height: 20px; /* Thumb height */
+  border-radius: 50%; /* Circular thumb */
+  background: #959488; /* Thumb color */
+  cursor: pointer; /* Pointer cursor on hover */
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
