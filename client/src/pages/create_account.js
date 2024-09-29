@@ -42,52 +42,59 @@ export default function create_account() {
     }
 
     return(
-        <div className="h-screen w-screen flex items-center justify-center">
-            <div className="border rounded-md w-1/3 flex flex-col justify-items-center items-start space-y-5">
-                <div className="w-full p-4 pb-0">
-                    <p>Email: </p>
-                    <input 
-                        type="text" 
-                        className="w-full rounded rounded-md bg-bgLight dark:bg-bgDark border p-2" 
-                        placeholder="Enter email here" 
-                        onChange={(e) => {setEmail(e.target.value)}}
-                    ></input>
+        <div className="h-screen w-screen flex items-center justify-center ellipse-gradient">
+            <div className="w-1/3 border rounded-md bg-black flex flex-col items-center justify-center">
+                <div className="p-4 text-3xl">
+                    Register Account
                 </div>
-
-                <div className="w-full px-4">
-                    <p>Username: </p>
-                    <input 
-                        type="text" 
-                        className="w-full rounded rounded-md bg-bgLight dark:bg-bgDark border p-2" 
-                        placeholder="Enter username here" 
-                        onChange={(e) => {setUsername(e.target.value)}}
-                    ></input>
-                </div>
-
-                <div className="w-full px-4">
-                    <p>Password: </p>
-                    <input type="text" 
-                        className="w-full rounded rounded-md bg-bgLight dark:bg-bgDark border p-2" 
-                        placeholder="Enter password here" 
-                        onChange={(e) => {setPassword(e.target.value)}}
-                    ></input>
-                </div>
-
-                <div className="w-full p-4 pt-0">
-                    <p>Confirm Password: </p>
-                    <input type="text" 
-                        className="w-full rounded rounded-md bg-bgLight dark:bg-bgDark border p-2" 
-                        placeholder="Confirm password here" 
-                        onChange={(e) => {setConfirmPassword(e.target.value)}}
-                    ></input>
-                </div>
-
-                <div className="flex flex-col w-full h-full items-center justify-items-center pb-4">
-                    <div>
-                        <button className="rounded-xl h-full w-full text-textDark" onClick={submit}>CREATE ACCOUNT</button>
+                <div className="h-full w-full flex flex-col justify-items-center items-start space-y-5">
+                    <div className="w-full p-4 pb-0">
+                        <p>Email: </p>
+                        <input 
+                            type="text" 
+                            className={`w-full rounded-md border p-2 ${email ? "bg-green-900" : "bg-black"}`}
+                            placeholder="Enter email here" 
+                            onChange={(e) => {setEmail(e.target.value)}}
+                        ></input>
                     </div>
-                    <div>
-                        <Link href="/login/">Already have an account?</Link>
+
+                    <div className="w-full px-4">
+                        <p>Username: </p>
+                        <input 
+                            type="text" 
+                            className={`w-full rounded-md border p-2 ${username ? "bg-green-900" : "bg-black"}`}
+                            placeholder="Enter username here" 
+                            onChange={(e) => {setUsername(e.target.value)}}
+                        ></input>
+                    </div>
+
+                    <div className="w-full px-4">
+                        <p>Password: </p>
+                        <input 
+                            type="password" 
+                            className={`w-full rounded-md border p-2 ${password ? "bg-green-900" : "bg-black"}`}
+                            placeholder="Enter password here" 
+                            onChange={(e) => {setPassword(e.target.value)}}
+                        ></input>
+                    </div>
+
+                    <div className="w-full p-4 pt-0">
+                        <p>Confirm Password: </p>
+                        <input 
+                            type="password" 
+                            className={`w-full rounded-md border p-2 ${confirmPassword ? "bg-green-900" : "bg-black"}`} 
+                            placeholder="Confirm password here" 
+                            onChange={(e) => {setConfirmPassword(e.target.value)}}
+                        ></input>
+                    </div>
+
+                    <div className="flex flex-col w-full h-full items-center justify-items-center py-4 space-y-4">
+                        <div>
+                            <button className="rounded border px-4 py-2 hover:bg-green-900" onClick={submit}>CREATE ACCOUNT</button>
+                        </div>
+                        <div>
+                            <Link href="/login/" className="hover:text-green-700">Already have an account?</Link>
+                        </div>
                     </div>
                 </div>
             </div>
