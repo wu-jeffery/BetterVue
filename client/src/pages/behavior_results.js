@@ -6,6 +6,7 @@ export default function Home() {
     const router = useRouter();
     const numQuestions = localStorage.getItem('numQ')
     const numQ = parseInt(numQuestions, 10)
+    const [resultsReady, setReady] = useState(false)
 
     const[questionsList, setQuestionsList] = useState([]);
 
@@ -15,6 +16,30 @@ export default function Home() {
             query: {},
         });
     }
+
+    useEffect(() =>{
+        const checkCondition = () => {
+            const itemValue = localStorage.getItem("ready");
+            if (itemValue === "true") {
+                setReady(true);
+            }
+        };
+
+        // Initial check
+        checkCondition();
+
+        // Set an interval to check every 100 milliseconds
+        const intervalId = setInterval(checkCondition, 100);
+
+        // Clean up the interval on unmount or when the condition is met
+        return () => clearInterval(intervalId);
+    }, []);
+
+    useEffect(() => {
+        if (resultsReady) {
+            getResults();
+        }
+    }, [resultsReady]); // Run when conditionMet changes
 
     const getResults = async () => {
         let user = await fetch('http://localhost:5000/users/verify/', {
@@ -50,8 +75,11 @@ export default function Home() {
     }
 
     useEffect(() => {
-        getResults();
-    }, []);
+        if (localStorage.getItem("ready") == "true"){
+            console.log("RESULTS RESULTS RESULTS")
+            getResults();
+        }
+    }, [localStorage.getItem("ready")]);
 
     return(
         <div>

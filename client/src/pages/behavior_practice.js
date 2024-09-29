@@ -25,6 +25,7 @@ function AudioRecorder({qLeftTwo, handleNextQuestion, numberOfQuestions, totalTi
                 console.log("Sending to backend...");
                 
                 try {
+                    localStorage.setItem('ready', "false");
                     const response = await fetch('http://localhost:5000/behavioral/processaudio/', {
                         method: "POST",
                         body: formData,
@@ -68,6 +69,7 @@ function AudioRecorder({qLeftTwo, handleNextQuestion, numberOfQuestions, totalTi
                     }));
                     const feedback = await resp.json();
                     console.log(feedback["feedback"])
+                    localStorage.setItem('ready', "true");
                 } catch (error) {
                     console.error('Error uploading audio:', error);
                 } finally {
@@ -317,6 +319,26 @@ export default function Home() {
     const handleNextQuestion = () => {
         setQLeftTwo(qLeftTwo - 1);
     };
+
+    useEffect(() => {
+        async function verify() {
+            const res = await fetch("http://localhost:5000/users/verify/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    token: localStorage.getItem("token"),
+                }),
+            });
+            
+            if (!res.ok) {
+                router.push("/login/");
+            }
+        }
+
+        verify();
+    }, []);
 
     const [question, setQuestion] = useState();
 

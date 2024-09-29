@@ -71,7 +71,7 @@ export default function Home() {
                         Your ELO: {user.ELO}
                     </div>
                     <div className="text-xl p-4">
-                        You have {user.questions_done} questions done.
+                        You have {user.questions_done / 2} questions done.
                     </div>
                 </div>
             </div>

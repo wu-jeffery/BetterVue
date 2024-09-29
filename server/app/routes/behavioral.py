@@ -11,6 +11,7 @@ def register_behavioral_routes(app, client):
         api_key=os.getenv("GROQ_API_KEY"),
     )
     mocks = client.interview_prep.mocks
+    users = client.interview_prep.users
     @app.route("/behavioral/questions/")
     def getQuestion():
         questionBank = [
@@ -164,10 +165,16 @@ def register_behavioral_routes(app, client):
         data = flask.request.get_json()
         username = data.get("username")
         numQuestions = int(data.get("numQuestions"))
-        results = mocks.find({"username": username}, {"_id": 0, "feedback": 1, "question": 1}).sort('_id', -1).limit(numQuestions)
+        results = mocks.find({"username": username}, {"_id": 0, "feedback": 1, "question": 1, "response": 1}).sort('_id', -1).limit(numQuestions)
         questions_dict = {
-            document.get("question"): document.get("feedback")  # +1 to start indexing from 1
+            document.get("question"): f'\nYour response: {document.get("response")}\nFeedback: {document.get("feedback")}'
             for index, document in enumerate(results)
         }
         ret = {"questions": questions_dict}
+        user = users.find_one({"username": username})
+        numDone = user.get("questions_done") + numQuestions
+        users.update_one(
+            {"username": username},
+            {"$set": {"questions_done": numDone}}
+        )
         return flask.jsonify(ret), 200
