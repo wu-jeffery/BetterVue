@@ -10,10 +10,10 @@ export default function Home() {
   const router = useRouter();
   
   const handleInterviewStart = () => { 
-    console.log("Interview Started!");
-    console.log(numberOfQuestions);
-    console.log(timePerQuestion);
-    console.log(videoOn);
+    // console.log("Interview Started!");
+    // console.log(numberOfQuestions);
+    // console.log(timePerQuestion);
+    // console.log(videoOn);
     router.push({
       pathname: '/behavior_practice',
       query: {
@@ -35,7 +35,7 @@ export default function Home() {
   return (
     <div>
       <h1 className="text-center text-6xl font-extrabold my-5">Behavioral Settings</h1>
-
+      <div className="absolute ellipse-gradient w-[2000px] h-[2000px] top-[800px] left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
       <div className='h-full w-full flex flex-col items-center justify-center space-y-10'>
         <Link href="/login/" className='rounded border text-xl p-5 w-1/4 text-center'>
             Create an account to start practicing!
@@ -105,7 +105,6 @@ export default function Home() {
           Start Interview
         </button>
       </div>
-      
     </div>
   );
 }

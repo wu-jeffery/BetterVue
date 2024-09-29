@@ -160,11 +160,14 @@ def register_behavioral_routes(app, client):
 
     @app.route("/behavioral/results/", methods=["POST"])
     def getResults():
+        print("getting results...")
         data = flask.request.get_json()
         username = data.get("username")
-        numQuestions = data.get("numQuestions")
+        numQuestions = int(data.get("numQuestions"))
         results = mocks.find({"username": username}, {"_id": 0, "feedback": 1, "question": 1}).sort('_id', -1).limit(numQuestions)
-        ret = {"questions": {
-            
-        }}
+        questions_dict = {
+            document.get("question"): document.get("feedback")  # +1 to start indexing from 1
+            for index, document in enumerate(results)
+        }
+        ret = {"questions": questions_dict}
         return flask.jsonify(ret), 200
