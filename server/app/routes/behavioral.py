@@ -97,10 +97,12 @@ def register_behavioral_routes(app, client):
     def processAudio():
         print("Received request")
         if 'audio' not in flask.request.files:
+            print("No audio file provided")
             return flask.jsonify({"error": "No audio file provided"}), 400
 
         audio_file = flask.request.files['audio']
         if not audio_file.filename.endswith('.wav'):
+            print("File is not WAV format")
             return flask.jsonify({"error": "File is not a WAV format"}), 400
         
         temp_path = "temp_audio"  # Temporary path for uploaded file
@@ -119,8 +121,10 @@ def register_behavioral_routes(app, client):
                 text = recognizer.recognize_google(audio)
                 return flask.jsonify({"transcript": text}), 200
             except sr.UnknownValueError:
+                print("Could not understand audio")
                 return flask.jsonify({"error": "Could not understand audio"}), 400
             except sr.RequestError as e:
+                print("Could not request results")
                 return flask.jsonify({"error": f"Could not request results from Google Speech Recognition service; {e}"}), 500
             finally:
                 if os.path.exists(temp_path):

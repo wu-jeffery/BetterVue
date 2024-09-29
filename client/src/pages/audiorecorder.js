@@ -5,7 +5,7 @@ export default function AudioRecorder() {
     const audioChunksRef = useRef([]);
     const mediaRecorderRef = useRef(null); // Use useRef for mediaRecorder
 
-    const startRecording = async () => {
+    const startRecordingAudio = async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             const mediaRecorder = new MediaRecorder(stream);
@@ -51,7 +51,7 @@ export default function AudioRecorder() {
         }
     };
 
-    const stopRecording = () => {
+    const stopRecordingAudio = () => {
         if (mediaRecorderRef.current) {
             mediaRecorderRef.current.stop(); // Use the ref to stop
             setIsRecording(false);
@@ -61,7 +61,7 @@ export default function AudioRecorder() {
     return (
         <div className="audio-recorder">
             <h2>Audio Recorder</h2>
-            <button onClick={isRecording ? stopRecording : startRecording}>
+            <button onClick={isRecording ? stopRecordingAudio : startRecordingAudio}>
                 {isRecording ? 'Stop Recording' : 'Start Recording'}
             </button>
         </div>
