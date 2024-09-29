@@ -34,7 +34,7 @@ export default function Login() {
             return;
         }
         console.log("logged in!");
-        router.push("/");
+        router.push("/home/");
     }
 
     return (
