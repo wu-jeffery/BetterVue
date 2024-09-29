@@ -11,7 +11,6 @@ export default function Login() {
 
     
     async function handleLogin(e){
-        console.log("hi")
         let userData = {
             username: user,
             password: password,

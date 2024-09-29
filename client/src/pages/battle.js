@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Editor, { DiffEditor, useMonaco, loader } from '@monaco-editor/react';
 import { useRouter } from 'next/router';
 import io from 'socket.io-client';
-import verify from "./verify";
 
 export default function Battle() {
     const socket = io('http://localhost:5000');
@@ -20,12 +19,26 @@ export default function Battle() {
 
     useEffect(() => {
         socket.on("post_match", (data) => {
+            async function adjust_elo() {
+                const res = await fetch("http://localhost:5000/users/elo/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        result: localStorage.getItem("result")
+                    })
+                });
+            }
+
             if (data.players.includes(username)) {
                 if (data.winner === username) {
                     localStorage.setItem("result", "win");
                 } else {
                     localStorage.setItem("result", "lose");
                 }
+                adjust_elo();
                 router.push("/postmatch/")
             }
         });
@@ -78,9 +91,26 @@ export default function Battle() {
     }, [id]);
 
     useEffect(() => {
-        verify().then((res) => {
-            setUsername(res);
-        });
+        async function verify() {
+            const res = await fetch("http://localhost:5000/users/verify/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    token: localStorage.getItem("token"),
+                }),
+            });
+            
+            if (!res.ok) {
+                router.push("/login/");
+            }
+        
+            let result = await res.json();
+            setUsername(result.username);
+        }
+
+        verify();
     }, []);
 
     async function submit() {

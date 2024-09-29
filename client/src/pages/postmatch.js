@@ -1,8 +1,12 @@
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function PostMatch() {
-    const [result, setResult] = useState(localStorage.getItem("result"));
+    const [result, setResult] = useState("");
+
+    useEffect(() => {
+        setResult(localStorage.getItem("result"));
+    }, []);
 
     return (
         <div className="flex flex-col h-screen items-center justify-center w-screen space-y-10 ellipse-gradient">
