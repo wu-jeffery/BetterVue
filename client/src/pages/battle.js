@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import io from 'socket.io-client';
 
 export default function Battle() {
-    const socket = io('http://localhost:5000');
+    const socket = io('https://my-project-mocha-alpha.vercel.app');
     const [question, setQuestion] = useState("");
     const [functionSignature, setFunctionSignature] = useState('');
     const [qid, setqId] = useState("");
@@ -20,7 +20,7 @@ export default function Battle() {
     useEffect(() => {
         socket.on("post_match", (data) => {
             async function adjust_elo() {
-                const res = await fetch("http://localhost:5000/users/elo/", {
+                const res = await fetch("https://my-project-mocha-alpha.vercel.app/users/elo/", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -47,7 +47,7 @@ export default function Battle() {
     useEffect(() => {
         async function get_opponent() {
             if (username && id) {
-                const res = await fetch('http://localhost:5000/matchmaking/opponent/', {
+                const res = await fetch('https://my-project-mocha-alpha.vercel.app/matchmaking/opponent/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -67,7 +67,7 @@ export default function Battle() {
 
     useEffect(() => {
         async function get_question() {
-            const response = await fetch('http://localhost:5000/battle/questions/', {
+            const response = await fetch('https://my-project-mocha-alpha.vercel.app/battle/questions/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -92,7 +92,7 @@ export default function Battle() {
 
     useEffect(() => {
         async function verify() {
-            const res = await fetch("http://localhost:5000/users/verify/", {
+            const res = await fetch("https://my-project-mocha-alpha.vercel.app/users/verify/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -115,7 +115,7 @@ export default function Battle() {
 
     async function submit() {
         const code = window.monaco.editor.getModels()[0].getValue();
-        const response = await fetch('http://localhost:5000/battle/execute/', {
+        const response = await fetch('https://my-project-mocha-alpha.vercel.app/battle/execute/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

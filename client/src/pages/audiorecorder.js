@@ -23,7 +23,7 @@ export default function AudioRecorder() {
                 console.log(audioBlob.type);
                 
                 try {
-                    const response = await fetch('http://localhost:5000/behavioral/processaudio/', {
+                    const response = await fetch('https://my-project-mocha-alpha.vercel.app/behavioral/processaudio/', {
                         method: "POST",
                         body: formData,
                         headers: {

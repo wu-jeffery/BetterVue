@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import { useRouter } from 'next/router';
 
 export default function Matchmaking() {
-    const socket = io('http://localhost:5000');
+    const socket = io('https://my-project-mocha-alpha.vercel.app');
     const [sessionId, setSessionId] = useState('');
     const [userId, setUserId] = useState('');
     const [status, setStatus] = useState('Waiting for another user...');
@@ -35,7 +35,7 @@ export default function Matchmaking() {
 
     useEffect(() => {
         async function verify() {
-            const res = await fetch("http://localhost:5000/users/verify/", {
+            const res = await fetch("https://my-project-mocha-alpha.vercel.app/users/verify/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

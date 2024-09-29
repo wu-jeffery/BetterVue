@@ -15,7 +15,7 @@ export default function create_account() {
             return;
         }
 
-        const res = await fetch("http://localhost:5000/users/create_account/", {
+        const res = await fetch("https://my-project-mocha-alpha.vercel.app/users/create_account/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -42,7 +42,7 @@ export default function Home() {
     }, [resultsReady]); // Run when conditionMet changes
 
     const getResults = async () => {
-        let user = await fetch('http://localhost:5000/users/verify/', {
+        let user = await fetch('https://my-project-mocha-alpha.vercel.app/users/verify/', {
             method: "POST",
             body: JSON.stringify({
                 token: localStorage.getItem("token"),
@@ -61,7 +61,7 @@ export default function Home() {
             numQuestions: numQ,
         };
         console.log("fetching results")
-        let result = await fetch('http://localhost:5000/behavioral/results/', {
+        let result = await fetch('https://my-project-mocha-alpha.vercel.app/behavioral/results/', {
             method: "POST",
             body: JSON.stringify(body),
             headers: {

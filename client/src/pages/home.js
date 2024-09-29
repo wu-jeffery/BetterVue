@@ -12,7 +12,7 @@ export default function Home() {
         if (username) {
             console.log("test2")
             async function get_user() {
-                const res = await fetch("http://localhost:5000/users/info/", {
+                const res = await fetch("https://my-project-mocha-alpha.vercel.app/users/info/", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -31,7 +31,7 @@ export default function Home() {
 
     useEffect(() => {
         async function verify() {
-            const res = await fetch("http://localhost:5000/users/verify/", {
+            const res = await fetch("https://my-project-mocha-alpha.vercel.app/users/verify/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

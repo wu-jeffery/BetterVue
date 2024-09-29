@@ -17,7 +17,7 @@ export default function Login() {
             email: user
         }
         try {
-            const res = await fetch("http://localhost:5000/users/login/", {
+            const res = await fetch("https://my-project-mocha-alpha.vercel.app/users/login/", {
                 method: "POST",
                 body: JSON.stringify(userData),
                 headers: {

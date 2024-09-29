@@ -26,7 +26,7 @@ function AudioRecorder({qLeftTwo, handleNextQuestion, numberOfQuestions, totalTi
                 
                 try {
                     localStorage.setItem('ready', "false");
-                    const response = await fetch('http://localhost:5000/behavioral/processaudio/', {
+                    const response = await fetch('https://my-project-mocha-alpha.vercel.app/behavioral/processaudio/', {
                         method: "POST",
                         body: formData,
                         headers: {
@@ -41,7 +41,7 @@ function AudioRecorder({qLeftTwo, handleNextQuestion, numberOfQuestions, totalTi
                     const data = await response.json();
                     console.log(data["transcript"]); 
 
-                    let user = await fetch('http://localhost:5000/users/verify/', {
+                    let user = await fetch('https://my-project-mocha-alpha.vercel.app/users/verify/', {
                         method: "POST",
                         body: JSON.stringify({
                             token: localStorage.getItem("token"),
@@ -60,7 +60,7 @@ function AudioRecorder({qLeftTwo, handleNextQuestion, numberOfQuestions, totalTi
                     }
 
                     console.log("judging...")
-                    const resp = await(fetch('http://localhost:5000/behavioral/judge/', {
+                    const resp = await(fetch('https://my-project-mocha-alpha.vercel.app/behavioral/judge/', {
                         method: "POST",
                         body: JSON.stringify(questionData),
                         headers: {
@@ -322,7 +322,7 @@ export default function Home() {
 
     useEffect(() => {
         async function verify() {
-            const res = await fetch("http://localhost:5000/users/verify/", {
+            const res = await fetch("https://my-project-mocha-alpha.vercel.app/users/verify/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -344,7 +344,7 @@ export default function Home() {
 
     const getQuestion = async () => {
         try{
-            const res = await fetch("http://localhost:5000/behavioral/questions/", {
+            const res = await fetch("https://my-project-mocha-alpha.vercel.app/behavioral/questions/", {
                 method: "GET",
             });
             
