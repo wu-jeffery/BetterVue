@@ -123,8 +123,9 @@ function AudioRecorder({qLeftTwo, handleNextQuestion, numberOfQuestions, totalTi
 }
 
 function AudioVisuals({qLeftTwo, numberOfQuestions, totalTimeInSeconds, handleNextQuestion, startRecordingAudio, stopRecordingAudio, getQuestion}) {
+    let recorderControls;
     if (global?.window !== undefined) {
-        const recorderControls = useVoiceVisualizer();
+        recorderControls = useVoiceVisualizer();
     }
     const {
         startRecording,
