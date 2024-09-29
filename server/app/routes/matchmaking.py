@@ -34,5 +34,5 @@ def register_matchmaking(app, socketio):
     @socketio.on("battle_end")
     def end_battle(data):
         players = sessions[data["session_id"]]
-        socketio.emit("post_match", {"players": players})
+        socketio.emit("post_match", {"players": players, "winner": data["winner"]})
 

@@ -20,8 +20,12 @@ export default function Battle() {
 
     useEffect(() => {
         socket.on("post_match", (data) => {
-            console.log(data);
             if (data.players.includes(username)) {
+                if (data.winner === username) {
+                    localStorage.setItem("result", "win");
+                } else {
+                    localStorage.setItem("result", "lose");
+                }
                 router.push("/postmatch/")
             }
         });
@@ -96,7 +100,7 @@ export default function Battle() {
 
         if (result.score[0] === 'A') {
             console.log("sending battle_end");
-            socket.emit('battle_end', { session_id: sid });
+            socket.emit('battle_end', { session_id: sid, winner: username });
         }
 
         setScore(result.score);

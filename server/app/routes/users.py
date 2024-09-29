@@ -92,7 +92,9 @@ def register_user_routes(app, client):
             "email": email,
             "username": username,
             "password": hashed_password,
-            "_id": str(ObjectId())
+            "ELO": 1000,
+            "questions_done": 0,
+            "_id": ObjectId()
         }
 
         users.insert_one(user)

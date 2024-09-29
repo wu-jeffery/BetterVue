@@ -13,15 +13,17 @@ export default function Home() {
     }, []);
 
     return (
-        <div className="flex flex-col h-screen w-screen justify-center items-center space-y-24">
-            <div className="text-xl border p-4 rounded-md">
-                <Link href="/matchmaking/">Find a match (coding battle!)</Link>
-            </div>
-            <div className="text-xl border p-4 rounded-md">
-                <Link href="/behavioral/">Practice behavioral</Link>
-            </div>
-            <div>
-                Username: {username}
+        <div className="flex flex-col h-screen w-screen justify-center items-center ellipse-gradient">
+            <div className="flex flex-col h-full w-5/6 items-start space-y-24 p-20">
+                <div className="text-5xl">
+                    Welcome, {username}!
+                </div>
+                <div className="text-xl border p-4 rounded-md">
+                    <Link href="/matchmaking/">Find a match (coding battle!)</Link>
+                </div>
+                <div className="text-xl border p-4 rounded-md">
+                    <Link href="/behavioral/">Practice behavioral</Link>
+                </div>
             </div>
         </div>
     );
