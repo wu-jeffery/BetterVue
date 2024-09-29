@@ -38,11 +38,23 @@ function AudioRecorder({qLeftTwo, handleNextQuestion, numberOfQuestions, totalTi
                     // }
                     console.log("response was ok")
                     const data = await response.json();
-                    console.log(data["transcript"]);
+                    console.log(data["transcript"]); 
+
+                    let user = await fetch('http://localhost:5000/users/verify/', {
+                        method: "POST",
+                        body: JSON.stringify({
+                            token: localStorage.getItem("token"),
+                        })
+                    })
+                    user = await user.json()
+                    user = user["username"]
+
                     let questionData = {
                         question: question,
-                        response: data["transcript"]
+                        response: data["transcript"],
+                        username: user
                     }
+
                     console.log("judging...")
                     const resp = await(fetch('http://localhost:5000/behavioral/judge/', {
                         method: "POST",
@@ -153,21 +165,24 @@ function AudioVisuals({qLeftTwo, numberOfQuestions, totalTimeInSeconds, handleNe
     );
 }
 
-function VideoVisuals({videoOn, webcamRef}) {
-    if (!videoOn) return;
-    if (videoOn) {
-        return (
-            <Webcam
-                audio={false}
-                ref={webcamRef}
-                screenshotFormat="image/jpeg"
-                videoConstraints={{
-                    facingMode: 'user',
-                }}
-                className="mb-4 webcam-display"
-            />
-        );
-    }
+function VideoVisuals({ videoOn, webcamRef }) {
+    if (!videoOn) return null;
+
+    return (
+        <div className="relative p-1 bg-gradient-to-br from-green-500 to-black rounded-lg">
+            <div className="p-1 rounded-lg bg-transparent">
+                <Webcam
+                    audio={false}
+                    ref={webcamRef}
+                    screenshotFormat="image/jpeg"
+                    videoConstraints={{
+                        facingMode: 'user',
+                    }}
+                    className="rounded-lg"
+                />
+            </div>
+        </div>
+    );
 }
 
 function NextQuestionStartTimer({ currentState, onNextQuestion, startRecording, stopRecording, startRecordingAudio, stopRecordingAudio, getQuestion }) {
@@ -279,7 +294,7 @@ function TimerBar({ numberOfQuestions, totalTimeInSeconds, isRunning, stopRecord
         <div className="flex flex-col items-center w-full">
             <div className="w-full h-8 bg-gray-300 rounded-full overflow-hidden mt-5">
                 <div
-                    className="h-full bg-green-500 transition-all duration-500 ease-linear"
+                    className="h-full bg-gradient-to-r from-green-800 to-green-300 transition-all duration-500 ease-linear"
                     style={{ width: `${progress}%` }}
                 ></div>
             </div>
@@ -340,42 +355,47 @@ export default function Home() {
     }
 
     return (
-      <div>
-        <div className='flex align-center'>
-            <button 
-                onClick={backToSettings}
-                className='rounded-full border text-l p-5 w-1/16 text-center m-5'
-                style={{
-                    backgroundColor: '#4CAF50', // Green background
-                    color: 'white', // White text
-                    cursor: 'pointer' // Pointer cursor on hover
-                }}
-            >
-                Back to Settings
-            </button>
-            <h1 className="text-center text-6xl font-extrabold mt-5">Behavioral Practice</h1>
+        <div className="relative w-full h-screen">
+          {/* Radial Gradient Background */}
+          <div className="absolute inset-0 ellipse-gradient rotate-[40deg] z-0"></div>
+          
+          <div className="relative z-10">
+              <div className='flex align-center'>
+                  <button 
+                      onClick={backToSettings}
+                      className='rounded-full border text-l p-5 w-1/16 text-center m-5'
+                      style={{
+                          backgroundColor: '#4CAF50', // Green background
+                          color: 'white', // White text
+                          cursor: 'pointer' // Pointer cursor on hover
+                      }}
+                  >
+                      Back to Settings
+                  </button>
+                  <h1 className="text-center text-6xl font-extrabold mt-5">Behavioral Practice</h1>
+              </div>
+  
+              <div className="text-center my-3">
+                  {question}
+              </div>
+              
+              {/* Webcam Component */}
+              <div className="flex justify-center flex-col items-center mb-2">
+                  <VideoVisuals videoOn = {isVideoOn} webcamRef = {webcamRef}/>
+              </div>
+              
+              {/* Audio Visualizer */}
+              <div className='flex flex-col items-center justify-center w-full'>
+                  <AudioRecorder
+                      qLeftTwo={qLeftTwo}
+                      handleNextQuestion={handleNextQuestion}
+                      numberOfQuestions={numberOfQuestions}
+                      totalTimeInSeconds={timePerQuestion} 
+                      getQuestion={getQuestion}
+                      question={question}
+                  />
+              </div> 
+          </div>
         </div>
-
-        <div className="text-center my-3">
-            {question}
-        </div>
-        
-        {/* Webcam Component */}
-        <div className="flex justify-center flex-col items-center mb-2">
-            <VideoVisuals videoOn = {isVideoOn} webcamRef = {webcamRef}/>
-        </div>
-        
-        {/* Audio Visualizer */}
-        <div className='flex flex-col items-center justify-center w-full'>
-            <AudioRecorder
-                qLeftTwo={qLeftTwo}
-                handleNextQuestion={handleNextQuestion}
-                numberOfQuestions={numberOfQuestions}
-                totalTimeInSeconds={timePerQuestion} 
-                getQuestion={getQuestion}
-                question={question}
-            />
-        </div> 
-      </div>
     );
 }

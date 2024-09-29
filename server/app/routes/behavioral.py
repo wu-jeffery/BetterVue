@@ -75,6 +75,7 @@ def register_behavioral_routes(app, client):
         data = flask.request.get_json()
         question = data.get("question")
         response = data.get("response")
+        username = data.get("username")
         prompt = f"Evaluate this candidate's usage of the STAR interview method with this response to the question: {question}. Use second-person point-of-view and address the candidate as 'you'."
         prompt += f"\n\n{response}"
 
@@ -95,7 +96,8 @@ def register_behavioral_routes(app, client):
         mockQuestion = {
             "question": question,
             "response": response,
-            "feedback": feedback
+            "feedback": feedback,
+            "username": username
         }
         mocks.insert_one(mockQuestion)
         return flask.jsonify({"feedback": feedback})
@@ -155,3 +157,14 @@ def register_behavioral_routes(app, client):
                     os.remove(temp_path)
                 if os.path.exists(wav_path):
                     os.remove(wav_path)
+
+    @app.route("/behavioral/results/", methods=["POST"])
+    def getResults():
+        data = flask.request.get_json()
+        username = data.get("username")
+        numQuestions = data.get("numQuestions")
+        results = mocks.find({"username": username}, {"_id": 0, "feedback": 1, "question": 1}).sort('_id', -1).limit(numQuestions)
+        ret = {"questions": {
+            
+        }}
+        return flask.jsonify(ret), 200
