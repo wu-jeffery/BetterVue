@@ -7,14 +7,14 @@ export default function Home() {
   const [numberOfQuestions, setNumberOfQuestions] = useState(3);
   const [timePerQuestion, setTimePerQuestion]= useState(30);
   const [videoOn, setVideoOn] = useState(false);
-  const router = useRouter();S
+  const router = useRouter();
   
   const handleInterviewStart = () => { 
     console.log("Interview Started!");
     console.log(numberOfQuestions);
     console.log(timePerQuestion);
     console.log(videoOn);
-    rWSouter.push({
+    router.push({
       pathname: '/behavior_practice',
       query: {
         numberOfQuestions,
