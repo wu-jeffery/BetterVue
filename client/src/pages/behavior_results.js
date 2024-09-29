@@ -15,6 +15,32 @@ export default function Home() {
         });
     }
 
+    const getResults = async () => {
+        let user = await fetch('http://localhost:5000/users/verify/', {
+            method: "POST",
+            body: JSON.stringify({
+                token: localStorage.getItem("token"),
+            })
+        })
+        user = await user.json()
+        user = user["username"]
+
+        let body = {
+            username: user,
+            numQuestions: numberOfQuestions
+        }
+
+        let result = await fetch('http://localhost:5000/behavioral/results/', {
+            method: "POST",
+            body: JSON.stringify(body),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        
+
+    }
+
     return(
         <div>
             <div className='flex align-center'>

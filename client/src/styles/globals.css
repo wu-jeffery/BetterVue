@@ -50,3 +50,14 @@ body {
     text-wrap: balance;
   }
 }
+
+/* Define the ellipse radial gradient */
+.ellipse-gradient {
+  background: radial-gradient(ellipse at center, #347136 0%, rgba(76, 175, 80, 0) 70%);
+  /* Green gradient (#4caf50 is the hex code for a medium green) */
+}
+
+/* Rotate class with custom 40-degree rotation */
+.rotate-\[40deg\] {
+  --tw-rotate: 40deg;
+}

@@ -96,7 +96,10 @@ module.exports = {
         '12/12': '100%',
         '1/50': '2%',
         '61/75': '81.3333%'
-      }
+      },
+      rotate: {
+        '40': '40deg', // Custom rotate of 40 degrees
+      },
     },
   },
   plugins: [],
