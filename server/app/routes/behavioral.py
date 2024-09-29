@@ -3,7 +3,8 @@ from dotenv import load_dotenv
 import os
 import random
 from groq import Groq
-
+import speech_recognition as sr
+from pydub import AudioSegment
 
 def register_behavioral_routes(app, client):
     model = Groq(
@@ -92,4 +93,42 @@ def register_behavioral_routes(app, client):
         feedback = chat_completion.choices[0].message.content
         return flask.jsonify({"feedback": feedback})
 
-    
+    @app.route("/behavioral/processaudio/", methods=["POST"])
+    def processAudio():
+        print("Received request")
+        if 'audio' not in flask.request.files:
+            return flask.jsonify({"error": "No audio file provided"}), 400
+
+        audio_file = flask.request.files['audio']
+        if not audio_file.filename.endswith('.wav'):
+            return flask.jsonify({"error": "File is not a WAV format"}), 400
+        
+        temp_path = "temp_audio"  # Temporary path for uploaded file
+        wav_path = "audio.wav"  # Final path after conversion
+        audio_file.save(temp_path)
+        audio_segment = AudioSegment.from_file(temp_path)
+        audio_segment.export(wav_path, format="wav")
+        
+        recognizer = sr.Recognizer()
+        
+        # Use the audio file with the recognizer
+        with sr.AudioFile(wav_path) as source:
+            try:
+                audio = recognizer.record(source)  # Read the entire audio file
+                # Use Google Web Speech API to recognize the audio
+                text = recognizer.recognize_google(audio)
+                return flask.jsonify({"transcript": text}), 200
+            except sr.UnknownValueError:
+                return flask.jsonify({"error": "Could not understand audio"}), 400
+            except sr.RequestError as e:
+                return flask.jsonify({"error": f"Could not request results from Google Speech Recognition service; {e}"}), 500
+            finally:
+                if os.path.exists(temp_path):
+                    os.remove(temp_path)
+                if os.path.exists(wav_path):
+                    os.remove(wav_path)
+                recordingPath = "uploads/recording.wav"
+                if os.path.exists(recordingPath):
+                    os.remove(recordingPath)
+                if os.path.exists("uploads"):
+                    os.rmdir("uploads")
