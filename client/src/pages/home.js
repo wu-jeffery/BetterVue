@@ -1,6 +1,7 @@
 import verify from "./verify";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 export default function Home() {
     let router = useRouter();
@@ -12,8 +13,16 @@ export default function Home() {
     }, []);
 
     return (
-        <div>
-            <h1>Welcome {username}</h1>
+        <div className="flex flex-col h-screen w-screen justify-center items-center space-y-24">
+            <div className="text-xl border p-4 rounded-md">
+                <Link href="/matchmaking/">Find a match (coding battle!)</Link>
+            </div>
+            <div className="text-xl border p-4 rounded-md">
+                <Link href="/behavioral/">Practice behavioral</Link>
+            </div>
+            <div>
+                Username: {username}
+            </div>
         </div>
     );
 }

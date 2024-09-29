@@ -5,11 +5,23 @@ import uuid
 import jwt
 from dotenv import load_dotenv
 import os
+from bson import ObjectId
 
 def register_user_routes(app, client):
     load_dotenv()
     SECRET_KEY = os.getenv("SECRET_KEY")
     users = client.interview_prep.users  
+
+    @app.route("/users/info/" , methods=["POST"])
+    def info():
+        data = flask.request.get_json()
+        username = data.get("username")
+
+        user = users.find_one({"username": username})
+        if not user:
+            return flask.abort(404)
+
+        return flask.jsonify(user), 200
 
     @app.route("/users/verify/" , methods=["POST"])
     def verify():
@@ -79,7 +91,8 @@ def register_user_routes(app, client):
         user = {
             "email": email,
             "username": username,
-            "password": hashed_password
+            "password": hashed_password,
+            "_id": str(ObjectId())
         }
 
         users.insert_one(user)

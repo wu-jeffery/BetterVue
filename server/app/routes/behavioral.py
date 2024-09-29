@@ -68,7 +68,7 @@ def register_behavioral_routes(app, client):
         question = random.choice(questionBank)
         return flask.jsonify({"question": question})
     
-    @app.route("/behavioral/judge", methods=["POST"])
+    @app.route("/behavioral/judge/", methods=["POST"])
     def judgeResponse():
         data = flask.request.get_json()
         question = data.get("question")
